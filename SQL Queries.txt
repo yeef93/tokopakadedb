@@ -1,0 +1,40 @@
+SELECT a.invoice_no, c."name", b."name", 
+concat(b."name",' (',b.phone , ') ', 
+d.address_location) AS shipmentAddress, 
+a.update_at,SUM (g.unit_price* g.quantity) AS price, 
+e.shipping_cost,e.insurance_cost, 
+((SUM (g.unit_price* g.quantity))+ e.shipping_cost + e.insurance_cost) as totalOrder,
+a.service_fee, 
+a.application_fee , a.total_amount, f.total AS promo,
+concat(i."name", ' - ', i."type") AS courier
+FROM tbl_order a, tbl_customer b, 
+tbl_seller c, tbl_customeraddress d,
+tbl_ordershipment e, tbl_orderpromo f, 
+tbl_orderitems g, tbl_ordershipment h,
+tbl_courier i
+WHERE a.cust_id = b.id
+AND a.seller_id = c.id
+AND a.address_id = d.id
+AND a.id = e.order_id
+AND a.id = f.order_id
+AND a.id = g.order_id
+AND a.id = h.order_id
+AND h.courier_id = i.id
+AND a.id = 1 
+GROUP BY a.invoice_no, c."name", b."name",
+b.phone, d.address_location, 
+a.update_at, e.shipping_cost, 
+e.insurance_cost, a.service_fee, 
+a.application_fee , a.total_amount, f.total,
+i."name", i."type";
+
+
+
+SELECT b."name" as paymentMethod from tbl_orderpayments a, tbl_paymentmethod b
+WHERE a.payment_methodid = b.id 
+AND a.order_id =1
+
+
+SELECT b."name", a.unit_price, a.quantity, (a.unit_price * a.quantity) AS total_price, a.weight FROM tbl_orderitems a, tbl_product b WHERE a.product_id = b.id AND a.order_id = 1
+
+
