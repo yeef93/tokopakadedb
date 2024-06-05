@@ -1,7 +1,9 @@
 SELECT a.invoice_no, c."name", b."name", 
+a.created_at,
 concat(b."name",' (',b.phone , ') ', 
 d.address_location) AS shipmentAddress, 
 a.update_at,SUM (g.unit_price* g.quantity) AS price, 
+SUM(g.quantity) AS totalQty,
 e.shipping_cost,e.insurance_cost, 
 ((SUM (g.unit_price* g.quantity))+ e.shipping_cost + e.insurance_cost) as totalOrder,
 a.service_fee, 
@@ -22,6 +24,7 @@ AND a.id = h.order_id
 AND h.courier_id = i.id
 AND a.id = 1 
 GROUP BY a.invoice_no, c."name", b."name",
+a.created_at,
 b.phone, d.address_location, 
 a.update_at, e.shipping_cost, 
 e.insurance_cost, a.service_fee, 
